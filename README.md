@@ -76,9 +76,7 @@ Switch platforms anytime. Your `.prose` files work everywhere.
 Then:
 
 ```
-"Run the code review example from OpenProse"
-"Execute my-workflow.prose"
-"Write me an OpenProse workflow for debugging"
+openprose boot
 ```
 
 ## Language Features
