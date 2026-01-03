@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "open-prose",
-      "source": ".",
+      "source": "./",
       "description": "A programming language for AI sessions - structures English into unambiguous control flow for multi-agent orchestration"
     }
   ]
