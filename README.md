@@ -12,6 +12,10 @@
   <a href="examples/">Examples</a>
 </p>
 
+<p align="center">
+  <strong>⚠️ Beta Software</strong> — <a href="#beta--legal">Read before using</a>
+</p>
+
 ---
 
 ```prose
@@ -78,6 +82,8 @@ Then:
 ```
 openprose boot
 ```
+
+> **By installing, you agree to the [Privacy Policy](PRIVACY.md) and [Terms of Service](TERMS.md).**
 
 ## Language Features
 
@@ -146,6 +152,23 @@ You can use `**...**` for that. But complex workflows need unambiguous structure
 **What's "intelligent IoC"?**
 Traditional IoC containers (Spring, Guice) wire up dependencies from configuration. OpenProse's container is an AI session that wires up agents using *understanding*. It doesn't just match names—it understands context, intent, and can make intelligent decisions about execution.
 
-## License
+## Beta & Legal
 
-MIT
+### Beta Status
+
+OpenProse is in **beta**. This means:
+
+- **Telemetry is on by default** — We collect anonymous usage data to improve the project. See our [Privacy Policy](PRIVACY.md) for details and how to opt out.
+- **Expect bugs** — The software may behave unexpectedly. Please report issues at [github.com/openprose/prose/issues](https://github.com/openprose/prose/issues).
+- **Not for production** — Do not use OpenProse for critical or production workflows yet.
+- **We want feedback** — Your input shapes the project. Open issues, suggest features, report problems.
+
+### Your Responsibility
+
+You are responsible for all actions performed by AI agents you spawn through OpenProse. Review your `.prose` programs before execution and verify all outputs.
+
+### Legal
+
+- [MIT License](LICENSE)
+- [Privacy Policy](PRIVACY.md)
+- [Terms of Service](TERMS.md)
