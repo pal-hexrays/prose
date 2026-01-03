@@ -52,7 +52,7 @@ loop until **the code is production ready**:
   session "Review and improve"
 ```
 
-The `**...**` syntax lets you speak directly to the interpreter. The orchestrator evaluates this semantically—it decides what "production ready" means based on context.
+The `**...**` syntax lets you speak directly to the OpenProse VM. It evaluates this semantically—deciding what "production ready" means based on context.
 
 ### 3. Open Standard, Zero Lock-in
 
@@ -117,9 +117,9 @@ Start with `01-hello-world.prose` or `03-code-review.prose`.
 
 ## How It Works
 
-### The Orchestrator
+### The OpenProse VM
 
-The orchestrator is an AI session that acts as an intelligent IoC container:
+The OpenProse VM is an AI session that acts as an intelligent runtime:
 
 | Aspect | Behavior |
 |--------|----------|
@@ -134,7 +134,7 @@ The orchestrator is an AI session that acts as an intelligent IoC container:
 
 | File | Purpose | When to Read |
 |------|---------|--------------|
-| `interpreter.md` | Execution semantics | Always, for running programs |
+| `interpreter.md` | OpenProse VM semantics | Always, for running programs |
 | `prose.md` | Full language spec | For compilation, validation, or syntax questions |
 
 ## FAQ

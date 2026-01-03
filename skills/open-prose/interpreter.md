@@ -1,12 +1,54 @@
-# OpenProse Interpreter
+---
+role: execution-semantics
+summary: |
+  How to execute OpenProse programs. You embody the OpenProse VM—a virtual machine that
+  spawns sessions via the Task tool, manages state in working memory, and coordinates
+  parallel execution. Read this file to run .prose programs.
+see-also:
+  - SKILL.md: Activation triggers, onboarding, telemetry
+  - prose.md: Full syntax grammar, validation rules, compilation
+---
 
-This document defines how to execute OpenProse programs. An OpenProse interpreter is an intelligent orchestrator that spawns subagent sessions according to a structured program.
+# OpenProse VM
+
+This document defines how to execute OpenProse programs. You are the OpenProse VM—an intelligent virtual machine that spawns subagent sessions according to a structured program.
+
+## Embodying the VM
+
+When you execute a `.prose` program, you ARE the virtual machine. This is not a metaphor—it's a mode of operation:
+
+| You | The VM |
+|-----|--------|
+| Your conversation history | The VM's working memory |
+| Your tool calls (Task) | The VM's instruction execution |
+| Your narration (emoji markers) | The VM's execution trace |
+| Your judgment on `**...**` | The VM's intelligent evaluation |
+
+**What this means in practice:**
+- You don't *simulate* execution—you *perform* it
+- Each `session` spawns a real subagent via the Task tool
+- Your state persists in what you say (narration protocol)
+- You follow the program structure strictly, but apply intelligence where marked
+
+### The VM as Intelligent Container
+
+Traditional dependency injection containers wire up components from configuration. You do the same—but with understanding:
+
+| Declared Primitive | Your Responsibility |
+|--------------------|---------------------|
+| `agent researcher:` | Register this agent template for later use |
+| `session: researcher` | Resolve the agent, merge properties, spawn the session |
+| `context: { a, b }` | Wire the outputs of `a` and `b` into this session's input |
+| `parallel:` branches | Coordinate concurrent execution, collect results |
+| `block review(topic):` | Store this reusable component, invoke when called |
+
+You are the container that holds these declarations and wires them together at runtime. The program declares *what*; you determine *how* to connect them.
 
 ---
 
 ## The Execution Model
 
-OpenProse treats an AI session as a Turing-complete computer. The orchestrator (you) acts as a virtual machine:
+OpenProse treats an AI session as a Turing-complete computer. You are the OpenProse VM:
 
 1. **You are the VM** - Parse and execute each statement
 2. **Sessions are function calls** - Each `session` spawns a subagent via the Task tool
@@ -15,7 +57,7 @@ OpenProse treats an AI session as a Turing-complete computer. The orchestrator (
 
 ### Core Principle
 
-The orchestrator follows the program structure **strictly** but uses **intelligence** for:
+The OpenProse VM follows the program structure **strictly** but uses **intelligence** for:
 - Evaluating discretion conditions (`**...**`)
 - Determining when a session is "complete"
 - Transforming context between sessions
@@ -336,7 +378,7 @@ On failure:
 
 ## State Tracking
 
-OpenProse supports two state management systems. The orchestrator must track execution state to correctly manage variables, loops, parallel branches, and error handling.
+OpenProse supports two state management systems. The OpenProse VM must track execution state to correctly manage variables, loops, parallel branches, and error handling.
 
 ### State Categories
 
@@ -356,7 +398,7 @@ OpenProse supports two state management systems. The orchestrator must track exe
 
 ## State Management: In-Context (Default)
 
-The default approach uses **structured narration** in the conversation history. The orchestrator "thinks aloud" to persist state—what you say becomes what you remember.
+The default approach uses **structured narration** in the conversation history. The OpenProse VM "thinks aloud" to persist state—what you say becomes what you remember.
 
 ### The Narration Protocol
 
@@ -685,7 +727,7 @@ If execution is interrupted, resume with:
 "Resume the OpenProse program from the last checkpoint"
 ```
 
-The orchestrator:
+The OpenProse VM:
 1. Reads `.prose/execution/run-.../position.json`
 2. Loads variables from `variables/`
 3. Continues from `statement_index`
@@ -868,7 +910,7 @@ When passing context to sessions:
 
 ## Summary
 
-The OpenProse interpreter:
+The OpenProse VM:
 
 1. **Parses** the program structure
 2. **Collects** definitions (agents, blocks)

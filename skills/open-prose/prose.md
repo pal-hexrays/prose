@@ -1,3 +1,14 @@
+---
+role: language-specification
+summary: |
+  Complete syntax grammar, validation rules, and compilation semantics for OpenProse.
+  Read this file when compiling, validating, or resolving ambiguous syntax. Assumes
+  interpreter.md is already in context for execution semantics.
+see-also:
+  - SKILL.md: Activation triggers, onboarding, telemetry
+  - interpreter.md: Execution semantics, how to run programs
+---
+
 # OpenProse Language Reference
 
 OpenProse is a programming language for AI sessions. An AI session is a Turing-complete computer; this document provides complete documentation for the language syntax, semantics, and execution model.
@@ -72,7 +83,7 @@ OpenProse provides a declarative syntax for defining multi-agent workflows. Prog
 
 - **Pattern over framework**: The simplest solution is barely anything at all—just structure for English
 - **Self-evident**: Programs should be understandable with minimal documentation
-- **The orchestrator is intelligent**: Design for understanding, not parsing
+- **The OpenProse VM is intelligent**: Design for understanding, not parsing
 - **Framework-agnostic**: Works with Claude Code, OpenCode, and any future agent framework
 - **Files are artifacts**: `.prose` is the portable unit of work
 
@@ -176,7 +187,7 @@ session "Do another thing"
 
 ### Compilation Behavior
 
-Comments are **stripped during compilation**. The Orchestrator never sees them. They have no effect on execution and exist purely for human documentation.
+Comments are **stripped during compilation**. The OpenProse VM never sees them. They have no effect on execution and exist purely for human documentation.
 
 ### Important Notes
 
@@ -357,7 +368,7 @@ import "shared-skill" from "../common/skills"
 
 ### Execution Semantics
 
-Import statements are processed before any agent definitions or sessions. The Orchestrator:
+Import statements are processed before any agent definitions or sessions. The OpenProse VM:
 
 1. Validates all imports at the start of execution
 2. Loads skill definitions from the specified sources
@@ -554,7 +565,7 @@ session: researcher
 
 ### Execution Semantics
 
-When the Orchestrator encounters a `session` statement:
+When the OpenProse VM encounters a `session` statement:
 
 1. **Resolve Configuration**: Merge agent defaults with session overrides
 2. **Spawn a Subagent**: Create a new Claude subagent with the resolved configuration
@@ -565,7 +576,7 @@ When the Orchestrator encounters a `session` statement:
 ### Execution Flow Diagram
 
 ```
-Orchestrator                    Subagent
+OpenProse VM                    Subagent
     |                              |
     |  spawn session               |
     |----------------------------->|
@@ -1222,7 +1233,7 @@ parallel ("any", count: 2, on-fail: "ignore"):
 
 ### Execution Semantics
 
-When the Orchestrator encounters a `parallel:` block:
+When the OpenProse VM encounters a `parallel:` block:
 
 1. **Fork**: Start all branches concurrently
 2. **Execute**: Each branch runs independently
@@ -1404,11 +1415,11 @@ session "Synthesize all research into a business plan"
 
 ## Unbounded Loops
 
-Unbounded loops provide iteration with AI-evaluated termination conditions. Unlike fixed loops, the iteration count is not known ahead of time - the Orchestrator evaluates conditions at runtime using its intelligence to determine when to stop.
+Unbounded loops provide iteration with AI-evaluated termination conditions. Unlike fixed loops, the iteration count is not known ahead of time - the OpenProse VM evaluates conditions at runtime using its intelligence to determine when to stop.
 
 ### Discretion Markers
 
-Unbounded loops use **discretion markers** (`**...**`) to wrap AI-evaluated conditions. These markers signal that the enclosed text should be interpreted intelligently by the Orchestrator at runtime, not as a literal boolean expression.
+Unbounded loops use **discretion markers** (`**...**`) to wrap AI-evaluated conditions. These markers signal that the enclosed text should be interpreted intelligently by the OpenProse VM at runtime, not as a literal boolean expression.
 
 ```prose
 # The text inside **...** is evaluated by the AI
@@ -1452,7 +1463,7 @@ loop until **the task is complete**:
   session "Continue working on the task"
 ```
 
-The Orchestrator evaluates the discretion condition after each iteration and exits when it determines the condition is satisfied.
+The OpenProse VM evaluates the discretion condition after each iteration and exits when it determines the condition is satisfied.
 
 ### Loop While
 
@@ -1566,7 +1577,7 @@ session "Finalize the document"
 
 ### Execution Semantics
 
-When the Orchestrator encounters an unbounded loop:
+When the OpenProse VM encounters an unbounded loop:
 
 1. **Initialize**: Set iteration counter to 0
 2. **Check Condition** (for `until`/`while`):
@@ -1584,11 +1595,11 @@ For basic `loop:` without conditions:
 
 ### Condition Evaluation
 
-The Orchestrator uses its intelligence to evaluate discretion conditions:
+The OpenProse VM uses its intelligence to evaluate discretion conditions:
 
 1. **Context Awareness**: The condition is evaluated in the context of what has happened so far in the session
 2. **Semantic Understanding**: The condition text is interpreted semantically, not literally
-3. **Uncertainty Handling**: When uncertain, the Orchestrator may:
+3. **Uncertainty Handling**: When uncertain, the OpenProse VM may:
    - Continue iterating if progress is being made
    - Exit early if diminishing returns are detected
    - Use heuristics based on the condition's semantics
@@ -1683,7 +1694,7 @@ let short = items | filter:
     context: item
 ```
 
-The session in a filter body should return something the Orchestrator can interpret as truthy/falsy (like "yes"/"no").
+The session in a filter body should return something the OpenProse VM can interpret as truthy/falsy (like "yes"/"no").
 
 ### Reduce
 
@@ -1776,7 +1787,7 @@ session "Format and present the combined summaries"
 
 ### Execution Semantics
 
-When the Orchestrator encounters a pipeline:
+When the OpenProse VM encounters a pipeline:
 
 1. **Input**: Start with the input collection
 2. **For each operation**:
@@ -2024,7 +2035,7 @@ backoff_property ::= "backoff" ":" string_literal
 
 ## Choice Blocks
 
-Choice blocks allow the AI Orchestrator to select from multiple labeled options based on criteria. This is useful for branching workflows where the best path depends on runtime analysis.
+Choice blocks allow the OpenProse VM to select from multiple labeled options based on criteria. This is useful for branching workflows where the best path depends on runtime analysis.
 
 ### Syntax
 
@@ -2038,7 +2049,7 @@ choice **criteria**:
 
 ### Criteria
 
-The criteria is wrapped in discretion markers (`**...**`) and is evaluated by the Orchestrator to select which option to execute:
+The criteria is wrapped in discretion markers (`**...**`) and is evaluated by the OpenProse VM to select which option to execute:
 
 ```prose
 choice **the best approach for the current situation**:
@@ -2111,7 +2122,7 @@ choice **the type of request**:
 
 ### Execution Semantics
 
-When the Orchestrator encounters a `choice` block:
+When the OpenProse VM encounters a `choice` block:
 
 1. **Evaluate Criteria**: Interpret the discretion criteria in current context
 2. **Select Option**: Choose the most appropriate labeled option
@@ -2287,7 +2298,7 @@ loop until **task complete** (max: 10):
 
 ### Execution Semantics
 
-When the Orchestrator encounters an `if` statement:
+When the OpenProse VM encounters an `if` statement:
 
 1. **Evaluate Condition**: Interpret the first discretion condition
 2. **If True**: Execute the then-body and skip remaining clauses
@@ -2337,7 +2348,7 @@ The compile phase handles deterministic preprocessing:
 
 ### Phase 2: Runtime (Intelligent)
 
-The Orchestrator executes the compiled program:
+The OpenProse VM executes the compiled program:
 
 1. **Load**: Receive the compiled program
 2. **Collect Agents**: Register all agent definitions
@@ -2345,7 +2356,7 @@ The Orchestrator executes the compiled program:
 4. **Spawn**: Create subagents with resolved configurations
 5. **Coordinate**: Manage context passing between sessions
 
-### Orchestrator Behavior
+### OpenProse VM Behavior
 
 | Aspect               | Behavior                                        |
 | -------------------- | ----------------------------------------------- |
@@ -2364,7 +2375,7 @@ For the current implementation, state is tracked in-context (conversation histor
 | Agent definitions   | Collected at program start                          |
 | Execution flow      | Implicit reasoning ("completed X, now executing Y") |
 | Session outputs     | Held in conversation history                        |
-| Position in program | Tracked by Orchestrator                             |
+| Position in program | Tracked by OpenProse VM                             |
 
 ---
 

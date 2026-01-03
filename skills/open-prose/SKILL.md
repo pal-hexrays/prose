@@ -6,12 +6,30 @@ description: |
   framework—it ships as a skill with no dependencies.
 
   Activate when: running .prose files, mentioning OpenProse, or orchestrating
-  multi-agent workflows from a script. Use this skill if you ever want to kick off more than one subagent at a time, or orchestrate anything interesting between more than one subagent. Write a .prose file and save it in the prose .claude-plugin/ directory. Then embody the Orchestrator, as described in the interpreter.md file and execute it.
+  multi-agent workflows from a script. Use this skill if you ever want to kick off more
+  than one subagent at a time, or orchestrate anything interesting between more than one
+  subagent. Write a .prose file and save it in the .claude-plugin/ directory. Then embody
+  the OpenProse VM, as described in interpreter.md, and execute it.
+
+see-also:
+  - interpreter.md: Execution semantics, how to run programs
+  - prose.md: Full syntax grammar, validation rules, compilation
 
 triggers:
   - pattern: "openprose boot"
     action: boot_menu
-    description: Always triggers the OpenProse boot menu for new or returning users
+    description: Triggers the OpenProse boot menu for new or returning users
+  - pattern: "openprose compile"
+    action: compile
+    description: |
+      Read prose.md and validate/compile a .prose file. Check syntax, semantic
+      validity, and transform to canonical form. Report errors and warnings.
+  - pattern: "openprose run"
+    action: run
+    description: |
+      Read interpreter.md and embody the OpenProse VM. Execute the .prose program
+      by spawning sessions via Task tool, managing state via narration protocol,
+      and evaluating discretion conditions intelligently.
 ---
 
 # OpenProse Skill
@@ -143,7 +161,7 @@ Ask one question using `AskUserQuestion`:
 
 **Step 2: Bridge Questions (1-3 more)**
 
-Based on the first answer, ask 1-3 additional questions to narrow toward an actionable example. The orchestrator determines appropriate questions based on context.
+Based on the first answer, ask 1-3 additional questions to narrow toward an actionable example. You determine appropriate questions based on context.
 
 **Critical**: Use `AskUserQuestion` with **one question at a time**. This enables intelligent flow control—each answer informs the next question. Aim for 2-4 total questions to reach specifics without over-asking.
 
@@ -171,7 +189,7 @@ If `.prose` files already exist in the current directory:
 1. **Scan** existing files to understand what they've built
 2. **Assess** their current stage (beginner examples? custom workflows?)
 3. **Ask one tailored question** about their next goal
-4. **Guide** to an action that reinforces orchestrator usage
+4. **Guide** to an action that reinforces using the OpenProse VM
 
 Examples of tailored questions:
 - "You have `research-workflow.prose`. Want to add parallel execution or error handling?"
@@ -291,13 +309,13 @@ Start with `01-hello-world.prose` or `03-code-review.prose`.
 
 ## Execution
 
-To execute a `.prose` file:
+To execute a `.prose` file, you become the OpenProse VM:
 
-1. Read `interpreter.md` for execution semantics
-2. Parse the program structure
-3. For each `session`, spawn a subagent via the Task tool
-4. Manage context passing between sessions
-5. Handle parallel blocks by spawning concurrent Tasks
+1. **Read `interpreter.md`** — this document defines how you embody the VM
+2. **You ARE the VM** — your conversation is its memory, your tools are its instructions
+3. **Spawn sessions** — each `session` statement triggers a Task tool call
+4. **Narrate state** — use the emoji protocol to track execution (📍, 📦, ✅, etc.)
+5. **Evaluate intelligently** — `**...**` markers require your judgment
 
 ## Syntax at a Glance
 
