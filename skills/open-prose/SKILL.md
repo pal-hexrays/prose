@@ -22,12 +22,14 @@ triggers:
   - pattern: "/prose-compile"
     action: compile
     description: |
-      Read docs.md and validate/compile a .prose file. Check syntax, semantic
+      Read docs.md from the plugin directory .claude/plugins/ or ~/.claude/plugins/ (use Glob to find
+      **/skills/open-prose/docs.md) and validate/compile a .prose file. Check syntax, semantic
       validity, and transform to canonical form. Report errors and warnings.
   - pattern: "/prose-run"
     action: run
     description: |
-      Read prose.md and embody the OpenProse VM. Execute the .prose program
+      Read prose.md from the plugin directory .claude/plugins/ or ~/.claude/plugins/ (use Glob to find
+      **/skills/open-prose/prose.md) and embody the OpenProse VM. Execute the .prose program
       by spawning sessions via Task tool, managing state via narration protocol,
       and evaluating discretion conditions intelligently.
 ---
