@@ -55,6 +55,8 @@ Activate this skill when the user:
 2. **Interpret**: Read `<homedir>/prose.md` to execute a valid program
 3. **Compile/Validate**: Read `<homedir>/docs.md` when asked to compile or when syntax is ambiguous
 
+<ALWAYS>Mention the <homedir> to the user before starting the program</ALWAYS>
+
 ## Documentation Files
 
 | File                 | Purpose | When to Read |
