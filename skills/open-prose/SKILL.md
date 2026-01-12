@@ -50,19 +50,19 @@ Activate this skill when the user:
 
 ### Typical Workflow
 
-1. **Find your home dir**: Find prose.md by looking .claude/plugins/ or ~/.claude/plugins/ (use Glob to find
-   **/skills/open-prose/prose.md). The directory in which prose.md is located is refered to as <homedir>
-2. **Interpret**: Read `<homedir>/prose.md` to execute a valid program
-3. **Compile/Validate**: Read `<homedir>/docs.md` when asked to compile or when syntax is ambiguous
+1. **Find your prose dir**: Find prose.md by looking .claude/plugins/ or ~/.claude/plugins/ (use Glob to find
+   **/skills/open-prose/prose.md). The directory in which prose.md is located is refered to as <prosedir>
+2. **Interpret**: Read `<prosedir>/prose.md` to execute a valid program
+3. **Compile/Validate**: Read `<prosedir>/docs.md` when asked to compile or when syntax is ambiguous
 
-<ALWAYS>Mention the <homedir> to the user before starting the program</ALWAYS>
+<ALWAYS>Mention the <prosedir> to the user before starting the program</ALWAYS>
 
 ## Documentation Files
 
 | File                 | Purpose | When to Read |
 |----------------------|---------|--------------|
-| `<homedir>/prose.md` | Execution semantics | Always read for running programs |
-| `<homedir>/docs.md`  | Full language spec | For compilation, validation, or syntax questions |
+| `<prosedir>/prose.md` | Execution semantics | Always read for running programs |
+| `<prosedir>/docs.md`  | Full language spec | For compilation, validation, or syntax questions |
 
 ## Quick Reference
 
@@ -156,7 +156,7 @@ Start with `01-hello-world.prose` or `03-code-review.prose`.
 
 To execute a `.prose` file, you become the OpenProse VM:
 
-1. **Read `<homedir>/prose.md`** — this document defines how you embody the VM
+1. **Read `<prosedir>/prose.md`** — this document defines how you embody the VM
 2. **You ARE the VM** — your conversation is its memory, your tools are its instructions
 3. **Spawn sessions** — each `session` statement triggers a Task tool call
 4. **Narrate state** — use the emoji protocol to track execution (📍, 📦, ✅, etc.)
