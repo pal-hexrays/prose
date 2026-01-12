@@ -1,9 +1,9 @@
 {
-  "name": "open-prose",
+  "name": "open-prose-fork",
   "description": "A programming language for AI sessions - structures English into unambiguous control flow for multi-agent orchestration",
   "version": "0.3.3",
   "author": {
-    "name": "OpenProse",
+    "name": "OpenProseFork",
     "url": "https://github.com/openprose"
   },
   "repository": "https://github.com/openprose/prose",

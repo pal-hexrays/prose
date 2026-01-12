@@ -1,8 +1,8 @@
 {
-  "name": "prose",
+  "name": "prose-fork",
   "owner": {
-    "name": "OpenProse",
-    "url": "https://github.com/openprose"
+    "name": "Pierre-Alexandre Losson",
+    "url": "https://github.com/plosson"
   },
   "plugins": [
     {
