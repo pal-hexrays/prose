@@ -35,6 +35,7 @@ When asked to "compile" a `.prose` file, use this specification to:
 The validation criterion: **Would a blank agent with only `prose.md` understand this program as self-evident?**
 
 When validating, check:
+
 - Syntax correctness (all constructs match grammar)
 - Semantic validity (references resolve, types match)
 - Self-evidence (program is clear without this full spec)
@@ -2664,13 +2665,12 @@ escape      → "\\" | "\"" | "\n" | "\t"
 
 ## Compiler API
 
-The bundled compiler can be used programmatically:
+When a user invokes `/prose-compile` or asks you to compile a `.prose` file:
 
-```bash
-# Validate and compile a program
-./scripts/compile program.prose
+1. **Read this document** (`docs.md`) fully to understand all syntax and validation rules
+2. **Parse** the program according to the syntax grammar
+3. **Validate** syntax correctness, semantic validity, and self-evidence
+4. **Transform** to canonical form (expand syntax sugar, normalize structure)
+5. **Output** the compiled program or report errors/warnings with line numbers
 
-# Output: canonical program or error messages
-```
-
-For direct interpretation without compilation, parse and execute statements as described in the Session Statement section.
+For direct interpretation without compilation, read `prose.md` and execute statements as described in the Session Statement section.

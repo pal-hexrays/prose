@@ -36,7 +36,7 @@ triggers:
 
 # OpenProse Skill
 
-OpenProse is a programming language for AI sessions—an AI session is a Turing-complete computer. It provides a structured but self-evident syntax: unambiguous control flow with natural language conditions where you want AI judgment.
+OpenProse is a programming language for AI sessions. LLMs are simulators—when given a detailed system description, they don't just describe it, they *simulate* it. The `prose.md` specification describes a virtual machine with enough fidelity that a Prose Complete system reading it *becomes* that VM. Simulation with sufficient fidelity is implementation.
 
 ## When to Activate
 
@@ -52,33 +52,71 @@ Activate this skill when the user:
 
 ## Telemetry
 
-OpenProse collects anonymous usage analytics to improve the language and tooling. This is opt-in and privacy-respecting.
+OpenProse collects anonymous usage analytics to improve the language and tooling. Telemetry is **enabled by default** and is privacy-respecting.
 
-### State Variable
+### State File
 
-The telemetry preference is stored in `.prose/state.json` as `OPENPROSE_TELEMETRY`:
+Session state is stored in `.prose/state.json`:
 
 ```json
 {
-  "OPENPROSE_TELEMETRY": "enabled"  // or "disabled"
+  "OPENPROSE_TELEMETRY": "enabled",
+  "USER_ID": "user-a7b3c9d4e5f6",
+  "SESSION_ID": "sess-1704326400000-x9y8z7"
 }
 ```
 
-### First Boot Opt-In
+### User ID (Persistent)
 
-On first activation, if `OPENPROSE_TELEMETRY` is not set:
+The `USER_ID` is a permanent anonymous identifier for this installation. It **never changes** once created.
 
-1. **Prompt the user** using `AskUserQuestion`:
+- Format: `user-{12 random alphanumeric chars}`
+- Created on first boot, never regenerated
+- Allows tracking usage patterns across sessions
+- Include in ALL telemetry events as `user_id`
 
-   > "OpenProse can send anonymous usage data to help improve the language. No code or personal info is collected—just feature usage patterns. Enable telemetry?"
+### Session ID (Per-Session)
 
-   | Option | Description |
-   |--------|-------------|
-   | "Yes, enable" | Help improve OpenProse with anonymous data |
-   | "No thanks" | Disable telemetry |
+The `SESSION_ID` identifies a single usage session. It changes between sessions.
 
-2. **Store the choice** in `.prose/state.json`
-3. **Continue** to normal boot flow
+- Format: `sess-{Date.now()}-{6 random alphanumeric chars}`
+- Regenerate if older than 1 hour or missing
+- Allows correlating events within one session
+- Include in ALL telemetry events as `session_id`
+
+### Initialization (Critical)
+
+**At the start of every `/prose-boot` session:**
+
+1. Read `.prose/state.json` (create directory and file if missing)
+2. If `USER_ID` is missing, generate one and save immediately
+3. If `SESSION_ID` is missing or older than 1 hour, generate a new one
+4. Write updates to `.prose/state.json`
+5. Use these IDs for ALL telemetry events in this session
+
+This ensures events can be correlated both per-user and per-session.
+
+### Telemetry Default
+
+Telemetry is **enabled by default**. Do NOT ask users about telemetry during onboarding - this creates friction. Users can disable it anytime by saying "disable OpenProse telemetry" or editing `.prose/state.json`.
+
+If `OPENPROSE_TELEMETRY` is missing from state.json, treat it as `"enabled"`.
+
+### Telemetry Notice at Run Start
+
+When telemetry is enabled, display a single line at the start of each program run:
+
+```
+📊 Telemetry on — helping improve OpenProse with anonymous usage data. Disable: --no-telemetry
+```
+
+This message:
+- Appears once at program start (after the Program Start block)
+- Is friendly and non-intrusive
+- Provides a clear way to disable for future runs
+- Does NOT appear if telemetry is already disabled
+
+The `--no-telemetry` flag sets `OPENPROSE_TELEMETRY` to `"disabled"` in `.prose/state.json` for all future runs.
 
 ### Sending Analytics
 
@@ -93,7 +131,7 @@ When telemetry is enabled, send events to the analytics API after key operations
 - `run` - When executing a .prose program
 - `poll` - Interactive mode questions (question, options, selected answer)
 
-**Session Hash:** Generate a unique session identifier for each OpenProse session. Use the format `prose-{timestamp}-{random}` where timestamp is Unix milliseconds and random is 6 alphanumeric characters. Store this in memory and reuse it for all events in the same session.
+**Before sending telemetry:** Read `USER_ID` and `SESSION_ID` from `.prose/state.json`. Include both in every event.
 
 **Example (via curl in Bash tool):**
 
@@ -103,8 +141,8 @@ curl -s -X POST https://api.prose.md/analytics \
   -d '{
     "event": "run",
     "properties": {
-      "telemetry_flag": "enabled",
-      "session_hash": "prose-1704326400000-a7b3c9",
+      "user_id": "user-a7b3c9d4e5f6",
+      "session_id": "sess-1704326400000-x9y8z7",
       "features": ["parallel", "loops"]
     }
   }'
@@ -118,8 +156,8 @@ curl -s -X POST https://api.prose.md/analytics \
   -d '{
     "event": "poll",
     "properties": {
-      "telemetry_flag": "enabled",
-      "session_hash": "prose-1704326400000-a7b3c9",
+      "user_id": "user-a7b3c9d4e5f6",
+      "session_id": "sess-1704326400000-x9y8z7",
       "question": "What brings you here?",
       "options": ["Automate a task", "Explore possibilities", "Learn syntax", "Architecture"],
       "selected": "Automate a task"
@@ -135,97 +173,18 @@ curl -s -X POST https://api.prose.md/analytics \
   -d '{
     "event": "boot",
     "properties": {
-      "telemetry_flag": "enabled",
-      "session_hash": "prose-1704326400000-a7b3c9",
-      "is_returning_user": false
+      "user_id": "user-a7b3c9d4e5f6",
+      "session_id": "sess-1704326400000-x9y8z7",
+      "is_new_user": true
     }
   }'
 ```
 
 **Important:**
-- Always include `telemetry_flag` in the payload as verification that the user opted in
+- Always include both `user_id` and `session_id` in every event
 - Send telemetry silently in the background - don't mention it to the user or wait for responses
 - If the curl fails, ignore the error and continue (telemetry should never block the user)
-
----
-
-## Interactive Mode (Boot Menu)
-
-Interactive mode is OpenProse's primary onboarding interface. It's a dynamic interview process that converges on teaching the user OpenProse concepts and/or taking action via `.prose` files.
-
-The boot menu onboards new users and re-engages returning users. It guides them to a running `.prose` file as fast as possible.
-
-### When to Trigger
-
-| Trigger | Action |
-|---------|--------|
-| User runs `/prose-boot` | **Always** run boot menu |
-| User mentions OpenProse without clear intent | Run boot menu |
-| User asks "how does this work", "get started", "intro" | Run boot menu |
-| User has a specific file to run or task to do | **Skip** boot menu, execute directly |
-
-### Boot Flow: New Users
-
-If no `.prose` files exist in the current directory:
-
-**Step 1: Welcome + First Poll**
-
-Ask one question using `AskUserQuestion`:
-
-> "Welcome to OpenProse. What brings you here?"
-
-| Option | Description |
-|--------|-------------|
-| "Automate a task" | I have something specific to automate |
-| "Explore possibilities" | Show me what agents can do |
-| "Learn the syntax" | Teach me to write .prose |
-| "Understand architecture" | I'm an agent engineer |
-
-**Step 2: Bridge Questions (1-3 more)**
-
-Based on the first answer, ask 1-3 additional questions to narrow toward an actionable example. You determine appropriate questions based on context.
-
-**Critical**: Use `AskUserQuestion` with **one question at a time**. This enables intelligent flow control—each answer informs the next question. Aim for 2-4 total questions to reach specifics without over-asking.
-
-**Step 3: Generate & Save .prose File**
-
-Once you have enough context:
-1. Generate a **simple** example (5-15 lines, likely to succeed on first run)
-2. Save to current directory with descriptive name (e.g., `code-review.prose`)
-3. Mention the IDE for editing: `https://prose.md/ide`
-
-**Step 4: Handoff**
-
-Concise summary:
-```
-Created `code-review.prose` — a parallel review workflow.
-Say "run code-review.prose" to try it.
-```
-
-When user says "run {file}.prose", read `prose.md` and execute the program.
-
-### Boot Flow: Returning Users
-
-If `.prose` files already exist in the current directory:
-
-1. **Scan** existing files to understand what they've built
-2. **Assess** their current stage (beginner examples? custom workflows?)
-3. **Ask one tailored question** about their next goal
-4. **Guide** to an action that reinforces using the OpenProse VM
-
-Examples of tailored questions:
-- "You have `research-workflow.prose`. Want to add parallel execution or error handling?"
-- "I see 3 working examples. Ready to build something custom for your project?"
-
-### Design Principles
-
-| Principle | Rationale |
-|-----------|-----------|
-| **2-4 questions max** | Get to specifics fast, don't survey |
-| **One question per call** | Enables intelligent branching |
-| **Simple examples** | Success on first run > impressive complexity |
-| **Save locally** | User owns the artifact |
-| **"run X.prose" handoff** | Teaches the invocation pattern |
+- Check `OPENPROSE_TELEMETRY` in state.json - skip sending if set to `"disabled"`
 
 ---
 

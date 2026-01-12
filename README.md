@@ -60,7 +60,7 @@ The `**...**` syntax lets you speak directly to the OpenProse VM. It evaluates t
 
 ### 3. Open Standard, Zero Lock-in
 
-OpenProse is a skill you import into Claude Code, OpenCode, Codex, Amp, or any compatible AI assistant. It's not a library you're locked into—it's a language specification.
+OpenProse runs on any **Prose Complete** system—a model + harness combination capable of inducing the VM. Currently: Claude Code + Opus, OpenCode + Opus, Amp + Opus. It's not a library you're locked into—it's a language specification.
 
 Switch platforms anytime. Your `.prose` files work everywhere.
 
@@ -70,17 +70,40 @@ Switch platforms anytime. Your `.prose` files work everywhere.
 
 **Why not rigid frameworks?** They're inflexible. OpenProse gives you structure where it matters (control flow, agent definitions) and natural language where you want flexibility (conditions, context passing).
 
-## Install (Claude Code)
+## Install
+
+### Claude Code
 
 ```bash
-/plugin marketplace add git@github.com:openprose/prose.git
-/plugin install open-prose@prose
+claude plugin marketplace add https://github.com/openprose/prose.git
+claude plugin install open-prose@prose
 ```
 
-Then **restart Claude Code** (commands load at startup), and run:
-
+Then launch Claude Code and try:
 ```
-/prose-boot
+"run example prose program and teach me how it works"
+```
+
+### OpenCode
+
+```bash
+git clone https://github.com/openprose/prose.git ~/.config/opencode/skill/open-prose
+```
+
+Then launch OpenCode and try:
+```
+"run example prose program and teach me how it works"
+```
+
+### Amp
+
+```bash
+git clone https://github.com/openprose/prose.git ~/.config/agents/skills/open-prose
+```
+
+Then launch Amp and try:
+```
+"run example prose program and teach me how it works"
 ```
 
 > **By installing, you agree to the [Privacy Policy](PRIVACY.md) and [Terms of Service](TERMS.md).**
@@ -104,7 +127,7 @@ See the [Language Reference](skills/open-prose/docs.md) for complete documentati
 
 ## Examples
 
-The plugin ships with 27 ready-to-use examples:
+The plugin ships with 28 ready-to-use examples:
 
 | Range | Category |
 |-------|----------|
@@ -116,6 +139,7 @@ The plugin ships with 27 ready-to-use examples:
 | 21 | Pipeline operations |
 | 22-23 | Error handling |
 | 24-27 | Advanced (choice, conditionals, blocks, interpolation) |
+| 28 | Orchestration (Gas Town multi-agent system) |
 
 Start with `01-hello-world.prose` or `03-code-review.prose`.
 
@@ -123,7 +147,11 @@ Start with `01-hello-world.prose` or `03-code-review.prose`.
 
 ### The OpenProse VM
 
-The OpenProse VM is an AI session that acts as an intelligent runtime:
+LLMs are simulators. When given a detailed system description, they don't just describe it—they *simulate* it. The OpenProse specification (`prose.md`) describes a virtual machine with enough fidelity that a Prose Complete system reading it *becomes* that VM.
+
+This isn't metaphor: each `session` triggers a real subagent, outputs are real artifacts, and state persists in conversation history or files. Simulation with sufficient fidelity is implementation.
+
+The VM maps traditional components to emergent structures:
 
 | Aspect | Behavior |
 |--------|----------|

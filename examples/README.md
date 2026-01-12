@@ -71,6 +71,12 @@ These examples demonstrate workflows using OpenProse's full feature set.
 | `26-parameterized-blocks.prose` | Reusable blocks with arguments |
 | `27-string-interpolation.prose` | Dynamic prompts with {var} syntax |
 
+### Orchestration Systems (28)
+
+| File | Description |
+|------|-------------|
+| `28-gas-town.prose` | Multi-agent orchestration ("Kubernetes for agents") with 7 worker roles, patrols, convoys, and GUPP propulsion |
+
 ## Running Examples
 
 Ask Claude to run any example:
